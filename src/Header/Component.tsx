@@ -5,5 +5,9 @@ import React from 'react'
 export async function Header() {
   const headerData = await getCachedGlobal('header', 1)()
 
-  return <HeaderClient data={headerData} />
+  return (
+    <div className="fixed bottom-0 left-0 z-50 bg-transparent -rotate-90 origin-top-left">
+      <HeaderClient data={headerData} />
+    </div>
+  )
 }

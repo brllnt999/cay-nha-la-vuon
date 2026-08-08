@@ -3,13 +3,10 @@ import { useHeaderTheme } from '@/providers/HeaderTheme'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
-
 import type { Header } from '@/payload-types'
-
 import { Logo } from '@/components/Logo/Logo'
-import { HeaderNav } from './Nav'
-import { ThemeSelector } from '@/providers/Theme/ThemeSelector'
 import { LanguageSelector } from '@/components/LanguageSelector'
+import { useWindowScroll } from 'react-use'
 
 interface HeaderClientProps {
   data: Header
@@ -20,6 +17,8 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   const { headerTheme, setHeaderTheme } = useHeaderTheme()
   const [theme, setTheme] = useState<string | null>(headerTheme ?? null)
   const pathname = usePathname()
+  const { y: scrollY } = useWindowScroll()
+  const isScrolled = scrollY > 40
 
   useEffect(() => {
     setHeaderTheme(null)
@@ -33,13 +32,19 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   }, [headerTheme])
 
   return (
-    <header className="container relative z-20" {...(theme ? { 'data-theme': theme } : {})}>
-      <div className="py-8 flex justify-between">
-        <Link href="/">
-          <Logo loading="eager" priority="high" className="invert dark:invert-0" />
+    <header
+      role="banner"
+      className="flex  items-center justify-center w-full gap-4 p-4 z-50 "
+      {...(theme ? { 'data-theme': theme } : {})}
+    >
+      <div className="flex items-center gap-4">
+        <div className="flex items-center">
+          <LanguageSelector />
+        </div>
+        <Link href="/" className="block h-10 w-auto">
+          <Logo loading="eager" priority="high" />
         </Link>
-        {/* <HeaderNav data={data} /> */}
-        <LanguageSelector />
+        {/* <span className="ml-2 text-lg font-semibold">Cây Nhà Lá Vườn</span> */}
       </div>
     </header>
   )

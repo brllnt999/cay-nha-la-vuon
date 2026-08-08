@@ -3,22 +3,30 @@ import type { Page, Post } from '@/payload-types'
 
 import { getCachedDocument } from '@/utilities/getDocument'
 import { getCachedRedirects } from '@/utilities/getRedirects'
+import { localizePath, type Locale } from '@/utilities/locales'
 import { notFound, redirect } from 'next/navigation'
 
 interface Props {
   disableNotFound?: boolean
+  locale?: Locale
   url: string
 }
 
 /* This component helps us with SSR based dynamic redirects */
-export const PayloadRedirects: React.FC<Props> = async ({ disableNotFound, url }) => {
+export const PayloadRedirects: React.FC<Props> = async ({ disableNotFound, locale, url }) => {
   const redirects = await getCachedRedirects()()
 
-  const redirectItem = redirects.find((redirect) => redirect.from === url)
+  const redirectItem = redirects.find(
+    (redirect) => redirect.from === url || (locale && redirect.from === localizePath(locale, url)),
+  )
 
   if (redirectItem) {
     if (redirectItem.to?.url) {
-      redirect(redirectItem.to.url)
+      const destination = redirectItem.to.url.startsWith('/') && locale
+        ? localizePath(locale, redirectItem.to.url)
+        : redirectItem.to.url
+
+      redirect(destination)
     }
 
     let redirectUrl: string
@@ -39,7 +47,7 @@ export const PayloadRedirects: React.FC<Props> = async ({ disableNotFound, url }
       }`
     }
 
-    if (redirectUrl) redirect(redirectUrl)
+    if (redirectUrl) redirect(locale ? localizePath(locale, redirectUrl) : redirectUrl)
   }
 
   if (disableNotFound) return null
