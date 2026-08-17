@@ -1,26 +1,8 @@
 'use client'
-import { useRouter } from 'next/navigation'
-import { useParams } from 'next/navigation'
-import { usePathname } from 'next/navigation'
-
-import { useId } from 'react'
+import React from 'react'
+import { useRouter, usePathname } from 'next/navigation'
 import Image from 'next/image'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/mini-selector'
-export const LanguageSelector = () => {
-  const { locale } = useParams()
-  console.log('locale', locale)
-  return (
-    <div>
-      <SelectWithFlagsDemo />
-    </div>
-  )
-}
+import { useId } from 'react'
 
 const countries = [
   {
@@ -40,36 +22,81 @@ const countries = [
   },
 ]
 
-const SelectWithFlagsDemo = () => {
-  const id = useId()
+export const SelectWithFlagsDemo = () => {
   const router = useRouter()
   const pathname = usePathname()
+  const menuId = useId()
+  const currentLocale = pathname.split('/')[1] || 'vi'
+  const currentCountry =
+    countries.find((country) => country.value === currentLocale) ?? countries[2]
+
   function handleChange(value: string) {
-    const newPathname = pathname.replace(/^\/[^\/]+/, `/${value}`)
+    const newPathname = pathname === '/' ? `/${value}` : pathname.replace(/^\/[^\/]+/, `/${value}`)
     router.push(newPathname)
   }
+
+  const [isOpen, setIsOpen] = React.useState(false)
+
   return (
-    <div className="">
-      {/* <Label htmlFor={id}>Options with flag</Label> */}
-      <Select defaultValue={'vi'} onValueChange={handleChange}>
-        <SelectTrigger id={id} className="w-full border-none *:data-[slot=select-value]:gap-2">
-          <SelectValue placeholder="Select country" />
-        </SelectTrigger>
-        <SelectContent className="max-h-100 w-full p-1">
-          {countries.map((country) => (
-            <SelectItem key={country.value} value={country.value}>
-              <Image
-                src={country.flag}
-                alt={`${country.label} flag`}
-                width={20}
-                height={20}
-                className="rounded-xs h-auto w-auto object-cover"
-              />
-              {/* <span className="truncate">{country.label}</span> */}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+    <div className="flex items-center gap-2">
+      <button
+        type="button"
+        aria-controls={menuId}
+        aria-expanded={isOpen}
+        aria-label="Change language"
+        onClick={() => setIsOpen((open) => !open)}
+        className="flex size-11 shrink-0 touch-manipulation items-center justify-center bg-transparent p-0 text-sm font-medium text-slate-700 shadow-none transition-all duration-200 ease-out"
+      >
+        <Image
+          src={currentCountry.flag}
+          alt={`${currentCountry.label} flag`}
+          width={20}
+          height={20}
+          className="h-auto w-auto rounded-sm object-cover"
+        />
+      </button>
+      <div
+        id={menuId}
+        aria-hidden={!isOpen}
+        className={`min-w-0 overflow-hidden transition-[width,opacity,transform] duration-300 ease-in-out ${
+          isOpen
+            ? 'w-[200px] translate-x-0 opacity-100'
+            : 'w-0 -translate-x-2 opacity-0 pointer-events-none'
+        }`}
+      >
+        <div className="w-max">
+          <div className="flex flex-row items-center gap-2 bg-transparent p-2">
+            <span
+              aria-hidden="true"
+              className={`text-sm text-slate-500 transition-transform duration-300 ease-in-out ${
+                isOpen ? 'translate-x-0' : '-translate-x-1'
+              }`}
+            >
+              &gt;
+            </span>
+            {countries.map((country) => (
+              <button
+                key={country.value}
+                type="button"
+                onClick={() => {
+                  handleChange(country.value)
+                  setIsOpen(false)
+                }}
+                aria-label={`Switch language to ${country.label}`}
+                className="flex size-11 shrink-0 touch-manipulation items-center justify-center bg-transparent p-1 transition-all duration-300 ease-in-out hover:scale-110 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
+              >
+                <Image
+                  src={country.flag}
+                  alt={`${country.label} flag`}
+                  width={20}
+                  height={20}
+                  className="h-auto w-auto rounded-sm object-cover"
+                />
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

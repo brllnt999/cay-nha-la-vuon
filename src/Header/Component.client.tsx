@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import type { Header } from '@/payload-types'
 import { Logo } from '@/components/Logo/Logo'
-import { LanguageSelector } from '@/components/LanguageSelector'
+import { SelectWithFlagsDemo } from '@/components/LanguageSelector'
 import { useWindowScroll } from 'react-use'
 
 interface HeaderClientProps {
@@ -18,7 +18,6 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   const [theme, setTheme] = useState<string | null>(headerTheme ?? null)
   const pathname = usePathname()
   const { y: scrollY } = useWindowScroll()
-  const isScrolled = scrollY > 40
 
   useEffect(() => {
     setHeaderTheme(null)
@@ -32,18 +31,13 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   }, [headerTheme])
 
   return (
-    <header
-      role="banner"
-      className="flex  items-center justify-center w-full gap-4 p-4 z-50 "
-      {...(theme ? { 'data-theme': theme } : {})}
-    >
-      <div className="flex items-center gap-4">
-        <div className="flex items-center">
-          <LanguageSelector />
-        </div>
-        <Link href="/" className="block h-10 w-auto">
-          <Logo loading="eager" priority="high" />
+    <header role="banner" {...(theme ? { 'data-theme': theme } : {})}>
+      <div className="flex items-center justify-center gap-6 md:h-[16.5vw] -mb-[15vw]">
+        <Link href="/" className="block">
+          <Logo loading="eager" priority="high" className="h-[80px] w-auto" />
         </Link>
+        {/* <LanguageSelector /> */}
+        <SelectWithFlagsDemo />
         {/* <span className="ml-2 text-lg font-semibold">Cây Nhà Lá Vườn</span> */}
       </div>
     </header>

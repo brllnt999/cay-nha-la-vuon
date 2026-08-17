@@ -5,18 +5,16 @@ import { GeistMono } from 'geist/font/mono'
 import { GeistSans } from 'geist/font/sans'
 import React from 'react'
 
-import { AdminBar } from '@/components/AdminBar'
-import { Footer } from '@/Footer/Component'
-import { Header } from '@/Header/Component'
-import { Providers } from '@/providers'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { draftMode } from 'next/headers'
 
 import './globals.css'
 import { getServerSideURL } from '@/utilities/getURL'
+import { Providers } from '@/providers'
+import { Footer } from '@/Footer/Component'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const { isEnabled } = await draftMode()
+  await draftMode()
 
   return (
     <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
@@ -24,21 +22,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
       </head>
-      <body className="flex flex-row justify-end items-end">
+      <body className="grid grid-cols-12 w-screen">
         <Providers>
-          {/* <AdminBar
-            adminBarProps={{
-              preview: isEnabled,
-            }}
-          /> */}
-          <div className="z-20 h-auto">
-            <Header />
+          <div className=" col-start-1 col-span-2  h-full bg-background ">
+            <Footer />
           </div>
-
-          <div className=" w-[80vw] md:w-[70vw] lg:w-[65vw] mx-auto px-4 py-8 border-2 border-red-500">
+          <div className="relative isolate col-start-3 col-span-10 mx-auto min-h-screen border-l border-border border-foreground/20">
             {children}
           </div>
-          {/* <Footer /> */}
         </Providers>
       </body>
     </html>

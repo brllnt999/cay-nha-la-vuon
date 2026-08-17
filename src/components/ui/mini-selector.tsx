@@ -30,7 +30,7 @@ const SelectTrigger: React.FC<React.ComponentProps<typeof SelectPrimitive.Trigge
 const SelectContent: React.FC<React.ComponentProps<typeof SelectPrimitive.Content>> = ({
   children,
   className,
-  position = 'popper',
+  position = 'item-aligned',
   ...props
 }) => {
   return (

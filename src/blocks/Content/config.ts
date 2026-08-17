@@ -5,9 +5,11 @@ import {
   HeadingFeature,
   InlineToolbarFeature,
   lexicalEditor,
+  BlocksFeature,
 } from '@payloadcms/richtext-lexical'
 
 import { link } from '@/fields/link'
+import { VintageImage } from '../VintageImage/config'
 
 const columnFields: Field[] = [
   {
@@ -41,6 +43,7 @@ const columnFields: Field[] = [
         return [
           ...rootFeatures,
           HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4'] }),
+          BlocksFeature({ blocks: [VintageImage] }),
           FixedToolbarFeature(),
           InlineToolbarFeature(),
         ]

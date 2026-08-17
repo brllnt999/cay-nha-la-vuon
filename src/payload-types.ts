@@ -1760,6 +1760,19 @@ export interface TaskSchedulePublish {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VintageImage".
+ */
+export interface VintageImage {
+  media: number | Media;
+  rotate?: number | null;
+  isolated?: number | null;
+  imageNote?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'vintageImage';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "BannerBlock".
  */
 export interface BannerBlock {

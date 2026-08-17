@@ -17,3 +17,9 @@ export const localizePath = (locale: Locale, path: string) => {
 
   return `/${locale}${normalizedPath}`
 }
+
+export const getClientLocale = (pathname: string): Locale => {
+  const [firstSegment] = pathname.split('/').filter(Boolean)
+  const defaultLocale = 'vi'
+  return isLocale(firstSegment) ? firstSegment : defaultLocale
+}
